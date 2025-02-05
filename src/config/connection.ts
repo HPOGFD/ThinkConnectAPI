@@ -1,16 +1,14 @@
-import express from 'express';
-import db from './config/connection.js';
-import routes from './routes/index.js';
+import mongoose from 'mongoose';
 
-const PORT = 3001;
-const app = express();
+const db = async (): Promise<typeof mongoose.connection> =>{
+    try {
+        await mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/networkDB');
+        console.log('Database connected.');
+        return mongoose.connection;
+    } catch(error) {
+        console.error('Database connection error:', error);
+        throw new Error('Database connection failed.');
+    }
+}
 
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-app.use(routes);
-
-db.once('open', () => {
-  app.listen(PORT, () => {
-    console.log(`API server running on port ${PORT}!`);
-  });
-});
+export default db;
