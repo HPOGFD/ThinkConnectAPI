@@ -1,10 +1,20 @@
 import { Router } from 'express';
 const router = Router();
-import { getAllUsers, createUser, getUserById, deleteUser } from '../../controllers/usersController.js';
+import { getAllUsers, 
+        createUser, 
+        getUserById, 
+        deleteUser, 
+        updateUser } from '../../controllers/usersController.js';
 
 // /api/users
-router.route('/').get(getAllUsers).post(createUser);
-// /api/users/:studentId
-router.route('/:userId').get(getUserById).delete(deleteUser);
+router.route('/')
+    .get(getAllUsers)   // Get all users
+    .post(createUser);  // Create a new user
 
-export { router as usersRouter} ;
+// /api/users/:userId
+router.route('/:userId')
+    .get(getUserById)   // Get a user by ID
+    .put(updateUser)    // ✅ Update user by ID
+    .delete(deleteUser); // Delete user by ID
+
+export { router as usersRouter };
