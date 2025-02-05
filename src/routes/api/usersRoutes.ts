@@ -5,7 +5,8 @@ import { getAllUsers,
         getUserById, 
         deleteUser, 
         updateUser,
-        addFriends } from '../../controllers/usersController.js';
+        addFriends,
+        removeFriend } from '../../controllers/usersController.js';
 
 // /api/users
 router.route('/')
@@ -20,7 +21,8 @@ router.route('/:userId')
 
     // /api/users/:userId/friends/:friendId
 router.route('/:userId/friends/:friendId')
-    .post(addFriends);
+    .post(addFriends)
+    .delete(removeFriend);
 
 
 export { router as usersRouter };

@@ -128,4 +128,40 @@ export const addFriends = async (req: Request, res: Response) => {
     }
 };
 
+/**
+ * DELETE Remove Friend from User's Friend List
+ * @route DELETE /users/:userId/friends/:friendId
+ * @param string userId - ID of the user
+ * @param string friendId - ID of the friend to remove
+ * @returns Updated User object after removing the friend
+ */
+export const removeFriend = async (req: Request, res: Response) => {
+    console.log('Removing a friend...');
+    console.log('Request Params:', req.params);
+
+    try {
+        const { userId, friendId } = req.params;
+
+        if (!friendId) {
+            return res.status(400).json({ message: 'Friend ID is required' });
+        }
+
+        const user = await User.findOneAndUpdate(
+            { _id: userId },
+            { $pull: { friends: friendId } }, // ✅ Remove friend from the friends array
+            { runValidators: true, new: true }   // ✅ Return updated document
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: 'No user found with that ID' });
+        }
+
+        return res.json(user); // Return updated user object
+    } catch (err) {
+        console.error('Error removing friend:', err);
+        return res.status(500).json({ message: 'Internal server error', error: err });
+    }
+};
+
+
 
