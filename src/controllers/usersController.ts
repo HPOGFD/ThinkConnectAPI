@@ -90,3 +90,42 @@ export const updateUser = async (req: Request, res: Response) => {
         return res.status(500).json({ message: 'Internal server error', error: err });
     }
 };
+
+
+
+/**
+ * POST Add Friend to User's Friend List
+ * @route POST /users/:userId/friends/:friendId
+ * @param string userId - ID of the user to add a friend to
+ * @param string friendId - ID of the friend to add
+ * @returns Updated User object with new friend added
+ */
+export const addFriends = async (req: Request, res: Response) => {
+    console.log('Adding a friend...');
+    console.log('Request Params:', req.params);
+
+    try {
+        const { userId, friendId } = req.params;
+
+        if (!friendId) {
+            return res.status(400).json({ message: 'Friend ID is required' });
+        }
+
+        const user = await User.findOneAndUpdate(
+            { _id: userId },
+            { $addToSet: { friends: friendId } }, // ✅ Add friend ID to friends array
+            { runValidators: true, new: true }   // ✅ Return updated document
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: 'No user found with that ID' });
+        }
+
+        return res.json(user);
+    } catch (err) {
+        console.error('Error adding friend:', err);
+        return res.status(500).json({ message: 'Internal server error', error: err });
+    }
+};
+
+
