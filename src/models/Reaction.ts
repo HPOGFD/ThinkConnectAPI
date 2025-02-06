@@ -1,31 +1,26 @@
-import { Schema, Types } from 'mongoose';
+import { Schema } from 'mongoose';
 
-// Reaction Schema (Subdocument)
 const reactionSchema = new Schema(
   {
-    reactionId: {
-      type: Schema.Types.ObjectId,
-      default: () => new Types.ObjectId(), // Generates a new ObjectId by default
-    },
     reactionBody: {
       type: String,
       required: true,
-      maxlength: 280, // Max 280 characters
+      maxlength: 280
     },
     username: {
       type: String,
-      required: true, // Required username of the reaction author
+      required: true
     },
     createdAt: {
       type: Date,
       default: Date.now,
-      get: (timestamp: Date) => timestamp.toISOString(), // Formats timestamp on query
-    },
+      get: (timestamp: Date) => timestamp.toISOString()
+    }
   },
   {
     toJSON: { getters: true },
-    id: false,
+    id: false
   }
 );
 
-export default reactionSchema; // ✅ Exporting as a schema, NOT a model
+export default reactionSchema;
