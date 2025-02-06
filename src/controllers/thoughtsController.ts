@@ -103,3 +103,31 @@ export const addReaction = async (req: Request, res: Response) => {
     }
 };
 
+export const deleteReaction = async (req: Request, res: Response) => {
+    console.log('Removing a reaction...');
+    console.log('Request Params:', req.params);
+
+    try {
+        const { thoughtId, reactionId } = req.params;  // Extract thoughtId and reactionId from the URL
+
+        if (!reactionId) {
+            return res.status(400).json({ message: 'Reaction ID is required' });  // Correct error message
+        }
+
+        const updatedThought = await Thought.findOneAndUpdate(
+            { _id: thoughtId },  // Find thought by thoughtId
+            { $pull: { reactions: { _id: reactionId } } },  // Remove the reaction by reactionId
+            { runValidators: true, new: true }  // Return the updated document
+        );
+
+        if (!updatedThought) {
+            return res.status(404).json({ message: 'No thought found with that ID' });  // Correct error message
+        }
+
+        return res.json(updatedThought);  // Return updated thought object
+    } catch (err) {
+        console.error('Error removing reaction:', err);
+        return res.status(500).json({ message: 'Internal server error', error: err });
+    }
+};
+
